@@ -17,6 +17,46 @@ coord GetCoords(const std::string& city_name) {
     return coord{latitude, longitude};
 }
 
+
+void SetWeather(const json& j, weather_info& weather, size_t hour) {
+    if (j["hourly"]["weathercode"][hour].is_null()) {
+        weather.null[0] = true;
+    } else {
+        weather.weather_code = j["hourly"]["weathercode"][hour];
+    }
+
+    if (j["hourly"]["temperature_2m"][hour].is_null()) {
+        weather.null[1] = true;
+    } else {
+        weather.temp = j["hourly"]["temperature_2m"][hour];
+    }
+
+    if (j["hourly"]["windspeed_10m"][hour].is_null()) {
+        weather.null[2] = true;
+    } else {
+        weather.windspeed = j["hourly"]["windspeed_10m"][hour];
+    }
+
+
+    if (j["hourly"]["winddirection_10m"][hour].is_null()) {
+        weather.null[3] = true;
+    } else {
+        weather.winddirection = j["hourly"]["winddirection_10m"][hour];
+    }
+
+    if (j["hourly"]["precipitation"][hour].is_null()) {
+        weather.null[4] = true;
+    } else {
+        weather.precipitation = j["hourly"]["precipitation"][hour];
+    }
+
+    if (j["hourly"]["precipitation_probability"][hour].is_null()) {
+        weather.null[5] = true;
+    } else {
+        weather.precipitation_probability = j["hourly"]["precipitation_probability"][hour];
+    }
+}
+
 std::vector<day_info> GetWeather(const coord& coords, uint8_t forecast_days) {
     // запрос к open meteo
     cpr::Response weather_resp = cpr::Get(
@@ -41,33 +81,17 @@ std::vector<day_info> GetWeather(const coord& coords, uint8_t forecast_days) {
         size_t evening_hour = 24 * i + 18;
         size_t night_hour = 24 * i + 23;
 
-        weather_info morning{j["hourly"]["weathercode"][morning_hour],
-                             j["hourly"]["temperature_2m"][morning_hour],
-                             j["hourly"]["windspeed_10m"][morning_hour],
-                             j["hourly"]["winddirection_10m"][morning_hour],
-                             j["hourly"]["precipitation"][morning_hour],
-                             j["hourly"]["precipitation_probability"][morning_hour]};
+        weather_info morning;
+        SetWeather(j, morning, morning_hour);
 
-        weather_info day{j["hourly"]["weathercode"][day_hour],
-                         j["hourly"]["temperature_2m"][day_hour],
-                         j["hourly"]["windspeed_10m"][day_hour],
-                         j["hourly"]["winddirection_10m"][day_hour],
-                         j["hourly"]["precipitation"][day_hour],
-                         j["hourly"]["precipitation_probability"][day_hour]};
+        weather_info day;
+        SetWeather(j, day, day_hour);
 
-        weather_info evening{j["hourly"]["weathercode"][evening_hour],
-                             j["hourly"]["temperature_2m"][evening_hour],
-                             j["hourly"]["windspeed_10m"][evening_hour],
-                             j["hourly"]["winddirection_10m"][evening_hour],
-                             j["hourly"]["precipitation"][evening_hour],
-                             j["hourly"]["precipitation_probability"][evening_hour]};
+        weather_info evening;
+        SetWeather(j, evening, evening_hour);
 
-        weather_info night{j["hourly"]["weathercode"][night_hour],
-                           j["hourly"]["temperature_2m"][night_hour],
-                           j["hourly"]["windspeed_10m"][night_hour],
-                           j["hourly"]["winddirection_10m"][night_hour],
-                           j["hourly"]["precipitation"][night_hour],
-                           j["hourly"]["precipitation_probability"][night_hour]};
+        weather_info night;
+        SetWeather(j, night, night_hour);
 
         std::string date = (static_cast<std::string>(j["hourly"]["time"][day_hour])).substr(
                 0, 10);

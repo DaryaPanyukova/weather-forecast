@@ -24,6 +24,8 @@ struct weather_info {
     int16_t winddirection;
     uint8_t precipitation;
     uint8_t precipitation_probability;
+
+    bool null[6] = {false};
 };
 
 struct day_info {

@@ -85,6 +85,8 @@ void SetPic(ftxui::Element& element, uint8_t code) {
                                       ftxui::text("    o  _/  _/      "),
                                       ftxui::text("      / o /  o     "),
                               }) | ftxui::flex;
+    } else {
+        element = ftxui::text("No data");
     }
 }
 
@@ -174,6 +176,8 @@ void SetType(std::string& type, uint8_t weather_code) {
         case 99:
             type = "Thunderstorm with hail";
             break;
+        default:
+            type = "No data";
     }
 }
 
@@ -213,25 +217,20 @@ void DrawDayPart(ftxui::Element& element, const weather_info& weather,
 
     element = window(ftxui::text(day_part) | ftxui::hcenter | ftxui::bold,
                      ftxui::hbox({
-                                         pic | ftxui::hcenter | ftxui::vcenter,
-                                         ftxui::vbox({ftxui::text(type) |
-                                                      ftxui::bold, ftxui::text(
-                                                 std::to_string(weather.temp) +
-                                                 " °С"),
-                                                      ftxui::text(direction +
-                                                                  " | " +
-                                                                  std::to_string(
-                                                                          weather.windspeed) +
-                                                                  " km/h"),
-                                                      ftxui::text(
-                                                              std::to_string(
-                                                                      weather.precipitation) +
-                                                              " mm | " +
-                                                              std::to_string(
-                                                                      weather.precipitation_probability) +
-                                                              " %")}) |
-                                         ftxui::vcenter
-                                 }));
+                         pic | ftxui::hcenter | ftxui::vcenter,
+                         ftxui::vbox({ftxui::text(type) | ftxui::bold,
+                         ftxui::text(weather.null[1]?
+                                "temp: no data": std::to_string(weather.temp) +" °С"),
+                         ftxui::text(weather.null[3] || weather.null[2]?
+                                "wind: no data" : (direction + " | " +
+                                std::to_string(weather.windspeed) + " km/h")),
+                         ftxui::text(weather.null[4] || weather.null[5]?
+                                "precipitation: no data" :
+                                (std::to_string (weather.precipitation) + " mm | " +
+                              std::to_string(weather.precipitation_probability) +
+                              " %"))
+                         }) | ftxui::vcenter
+                         }));
 }
 
 void DrawDay(ftxui::Element& element, const day_info& weather) {
