@@ -1,0 +1,8 @@
+add_executable(labwork_10_DaryaPanyukova main.cpp)
+
+target_link_libraries(labwork_10_DaryaPanyukova PRIVATE weather)
+target_link_libraries(labwork_10_DaryaPanyukova PRIVATE OMFLparser)
+target_link_libraries(labwork_10_DaryaPanyukova PRIVATE cpr::cpr)
+target_link_libraries(labwork_10_DaryaPanyukova PRIVATE nlohmann_json::nlohmann_json)
+target_link_libraries(labwork_10_DaryaPanyukova PRIVATE ftxui::dom ftxui::component ftxui::screen)
+target_include_directories(labwork_10_DaryaPanyukova PRIVATE ${PROJECT_SOURCE_DIR})
