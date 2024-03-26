@@ -58,7 +58,8 @@ int main(int argc, char** argv) {
 
     auto component = CatchEvent(renderer, [&](ftxui::Event event) {
         if (event == ftxui::Event::Escape) {
-            screen.ExitLoopClosure()();
+            screen.ExitLoopClosure();
+            exit(0);
             return true;
         } else if (event == ftxui::Event::Character("+")) {
             days = days + 1 < kMaxDays ? days + 1 : kMaxDays;
