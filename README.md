@@ -16,7 +16,7 @@
 
 ## Config
 
-Для конфиг-файла используется формат [OMFL](https://github.com/DaryaPanyukova/omfl-parser)
+Для конфиг-файла используется формат [OMFL](https://github.com/DaryaPanyukova/omfl-parser).
 Конфигом задается список городов, частота обновления, количество дней прогноза.
 
 ## Пример работы 
